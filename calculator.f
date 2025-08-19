@@ -142,8 +142,6 @@ c     Gerar permutações de ordens maiores
 
 c     Imprimir determinante
 
-      if (mod(N,2) .eq. 0) then
-
       col_paridade = ncoluna
       do i = 1, nlinha
           !Calcula o produto a_{1,σ(1)} * a_{2,σ(2)} * ... * a_{N,σ(N)}
@@ -153,24 +151,12 @@ c     Imprimir determinante
           end do
 
           !Adiciona ao determinante com a paridade
-          det = det + v2(i, col_paridade) * produto
+          if (mod(N,2) .eq. 0) then
+            det = det + v2(i, col_paridade) * produto
+          else
+            det = det + v(i, col_paridade) * produto
+          end if
       end do
-
-      else
-
-      col_paridade = ncoluna
-      do i = 1, nlinha
-          !Calcula o produto a_{1,σ(1)} * a_{2,σ(2)} * ... * a_{N,σ(N)}
-          produto = 1.0
-          do s = 1, N
-              produto = produto * A(s, int(v(i,s)))
-          end do
-
-          !Adiciona ao determinante com a paridade
-          det = det + v(i, col_paridade) * produto
-      end do
-
-      end if
 
       write(*,*) "Determinante calculado:", det
 
