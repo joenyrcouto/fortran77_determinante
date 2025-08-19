@@ -7,7 +7,7 @@
       character*200 linha
 
 c     Ler permutação base
-      open(UNIT=10, FILE='tarefa-5-entrada-1-15464382.txt')
+      open(UNIT=10, FILE='permutacoes.txt')
 
       !Contar linha
       do
