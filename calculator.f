@@ -147,7 +147,11 @@ c     Imprimir determinante
           !Calcula o produto a_{1,σ(1)} * a_{2,σ(2)} * ... * a_{N,σ(N)}
           produto = 1.0
           do s = 1, N
-              produto = produto * A(s, int(v2(i,s)))
+              if (mod(N,2) .eq. 0) then
+                produto = produto * A(s, int(v2(i,s)))
+              else
+                produto = produto * A(s, int(v(i,s)))
+             end if
           end do
 
           !Adiciona ao determinante com a paridade
