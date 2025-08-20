@@ -1,13 +1,13 @@
-      program tarefa5 !autor Joenyr ;)
+      program tarefa5 !autor Joenyr :0
 
-      real v(362880, 10), v2(362880, 10), A(19,19), det/0/,
-     & produto/1/
-      integer i, j, s, k/200/, nlinha/0/, ncoluna/0/, onoff/0/,
+      real v(362880, 10), v2(362880, 10), A(10,9,9), det(10),
+     & produto, y(9), x(9)
+      integer i, j, s, s2, k/200/, nlinha/0/, ncoluna/0/, onoff/0/,
      & fatorial/1/, col_paridade, N
       character*200 linha
 
 c     Ler permutação base
-      open(UNIT=10, FILE='permutacoes.txt')
+      open(UNIT=10, FILE='tarefa-5-entrada-1-15464382.txt')
 
       !Contar linha
       do
@@ -44,7 +44,7 @@ c     Ler permutação base
       end do
       close(10)
 
-c     Ler matriz alvo
+c     Ler matriz e vetor alvo
 
       !Salvar string
       open(UNIT=11, FILE='matriz.txt')
@@ -70,10 +70,29 @@ c     Ler matriz alvo
         end if
       end do
 
-      !Ler numeros
+      !Ler numeros da matriz
       rewind(11)
       do i=1,N
-        read(11,*) (A(i,j), j=1,N)
+        read(11,*) (A(1,i,j), j=1,N)
+      end do
+
+      !Ler numeros do vetor
+      do i=1,N
+        read(11,*) y(i)
+      end do
+
+c     Gerar outras matrizes
+
+      do s=2,N+1
+        do i=1,N
+          do j=1,N
+            if (j .ne. s-1) then
+              A(s,i,j) = A(1, i,j)
+            else
+              A(s,i,j) = y(i)
+            end if
+          end do
+        end do
       end do
 
 c     Gerar permutações
@@ -140,29 +159,42 @@ c     Gerar permutações de ordens maiores
       goto 23
       end if
 
-c     Imprimir determinante
+c     Calcular determinantes
+
+      do s2=1,N+1
 
       col_paridade = ncoluna
       do i = 1, nlinha
-          !Calcula o produto a_{1,σ(1)} * a_{2,σ(2)} * ... * a_{N,σ(N)}
+          !Calcula o produto
           produto = 1.0
           do s = 1, N
-              if (mod(N,2) .eq. 0) then
-                produto = produto * A(s, int(v2(i,s)))
+            if (mod(N,2) .eq. 0) then
+                produto = produto * A(s2, s, int(v2(i,s)))
               else
-                produto = produto * A(s, int(v(i,s)))
+                produto = produto * A(s2, s, int(v(i,s)))
              end if
           end do
 
           !Adiciona ao determinante com a paridade
           if (mod(N,2) .eq. 0) then
-            det = det + v2(i, col_paridade) * produto
+             det(s2) = det(s2) + v2(i, col_paridade) * produto
           else
-            det = det + v(i, col_paridade) * produto
+             det(s2) = det(s2) + v(i, col_paridade) * produto
           end if
       end do
 
-      write(*,*) "Determinante calculado:", det
+      end do
+
+c     Calcular soluções
+
+      do i = 1,N
+        x(i) = det(1+i)/det(1)
+      end do
+
+c     Imprimir soluções
+
+      write(*,31) (x(j), j=1,N)
+31    format("Soluções: ", 9F10.2)
 
       stop
       end
